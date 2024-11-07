@@ -5,7 +5,7 @@ import { school } from "./data/school.js";
 
 const callDetails = () => {
   console.log("School details");
-  console.log(teknikhogskolan);
+  console.log(school);
   console.log("Subjects details");
   console.log(subjects);
   console.log("Students details");
@@ -18,14 +18,13 @@ const enrollStudentToSubject = (targetStudent, targetSubject) => {
   const subjectObject = subjects.find(
     (subject) => subject.name === targetSubject
   );
-  if (!subjectObject.students.includes(targetStudent))
-    subjectObject.addStudent(targetStudent);
+
+  subjectObject.students.push(targetStudent);
 
   const studentObject = students.find(
     (student) => student.name === targetStudent
   );
-  if (!studentObject.subjects.includes(targetSubject))
-    studentObject.enlistToSubject(targetSubject);
+  studentObject.enrollSubject(targetSubject);
 };
 
 const enrollAllStudentsToSubject = (targetSubject) => {
@@ -35,24 +34,16 @@ const enrollAllStudentsToSubject = (targetSubject) => {
   subjectObject.students = students.map((student) => student.name);
 
   students.forEach((student) => {
-    //enroll the subject to students details
-    if (!student.subjects.includes(targetSubject))
-      student.enlistToSubject(targetSubject);
+    student.enrollSubject(targetSubject);
   });
 };
 
 const registerAllStudentsToSchool = () => {
-  teknikhogskolan.students = [];
-  students.forEach((student) => {
-    teknikhogskolan.addStudent(student);
-  });
+  school.students = students;
 };
 
 const registerAllTeachersToSchool = () => {
-  teknikhogskolan.teachers = [];
-  teachers.forEach((teacher) => {
-    teknikhogskolan.addTeacher(teacher);
-  });
+  school.teachers = teachers;
 };
 
 const asignToTeach = (targetTeacher, targetSubject) => {
@@ -228,18 +219,17 @@ const startingdetails = () => {
   registerAllStudentsToSchool();
   registerAllTeachersToSchool();
   enrollAllStudentsToSubject("mathematics");
-  enrollAllStudentsToSubject("mathematics");
-  enrollStudentToSubject("student1", "chemistry");
-  enrollStudentToSubject("student1", "chemistry");
-  enrollStudentToSubject("student2", "chemistry");
-  enrollStudentToSubject("student3", "chemistry");
-  enrollStudentToSubject("student3", "biology");
-  enrollStudentToSubject("student4", "biology");
-  enrollStudentToSubject("student5", "biology");
-  asignToTeach("teacher1", "mathematics");
-  asignToTeach("teacher1", "chemistry");
-  asignToTeach("teacher2", "biology");
-  asignToTeach("teacher2", "chemistry");
+  // enrollStudentToSubject("student1", "chemistry");
+  // enrollStudentToSubject("student1", "chemistry");
+  // enrollStudentToSubject("student2", "chemistry");
+  // enrollStudentToSubject("student3", "chemistry");
+  // enrollStudentToSubject("student3", "biology");
+  // enrollStudentToSubject("student4", "biology");
+  // enrollStudentToSubject("student5", "biology");
+  // asignToTeach("teacher1", "mathematics");
+  // asignToTeach("teacher1", "chemistry");
+  // asignToTeach("teacher2", "biology");
+  // asignToTeach("teacher2", "chemistry");
 };
 const changes1 = () => {
   removeStudentFromSubject("student1", "chemistry");
@@ -274,7 +264,7 @@ const changes3 = () => {
 };
 //#endregion
 
-//startOfTermDetails();
+startOfTermDetails();
 //firstWeekOfTermDetails();
 //duringTermTime();
 //afterMidTerm();

@@ -1,16 +1,23 @@
+class Teacher {
+  name;
+  subjects;
+
+  constructor(techerDetails) {
+    this.name = techerDetails.name;
+    this.subjects = [];
+  }
+
+  asignToTeach() {
+    if (!this.subjects.includes(targetSubject))
+      this.subjects.push(targetSubject);
+  }
+}
+
 export const teachers = [
   {
     name: "teacher1",
-    subjects: [],
-    addSubject: function (subject) {
-      this.subjects.push(subject);
-    },
   },
   {
     name: "teacher2",
-    subjects: [],
-    addSubject: function (subject) {
-      this.subjects.push(subject);
-    },
   },
-];
+].map((techerDetails) => new Teacher(techerDetails));
