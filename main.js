@@ -1,7 +1,7 @@
 import { teachers } from "./data/teachers.js";
 import { subjects } from "./data/subjects.js";
 import { students } from "./data/students.js";
-import { teknikhogskolan } from "./data/school.js";
+import { school } from "./data/school.js";
 
 const callDetails = () => {
   console.log("School details");
@@ -277,7 +277,7 @@ const changes3 = () => {
 //startOfTermDetails();
 //firstWeekOfTermDetails();
 //duringTermTime();
-afterMidTerm();
+//afterMidTerm();
 
 //console.log(displayEachCategory("students"));
 //console.log(displayAllSubjectsOfStudent("student2"));

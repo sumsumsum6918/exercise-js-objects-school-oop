@@ -1,12 +1,23 @@
+export class Student {
+  name;
+  agegender;
+  subjects;
+  grades;
+
+  constructor(studentDetails) {
+    this.name = studentDetails.name;
+    this.age = studentDetails.age;
+    this.subjects = studentDetails.subjects;
+    this.grades = studentDetails.grade;
+  }
+}
+
 export const students = [
   {
     name: "student1",
     age: 18,
     gender: "M",
     subjects: [],
-    enlistToSubject: function (subject) {
-      this.subjects.push(subject);
-    },
     grades: [],
   },
   {
@@ -14,9 +25,6 @@ export const students = [
     age: 23,
     gender: "F",
     subjects: [],
-    enlistToSubject: function (subject) {
-      this.subjects.push(subject);
-    },
     grades: [],
   },
   {
@@ -24,9 +32,6 @@ export const students = [
     age: 45,
     gender: "F",
     subjects: [],
-    enlistToSubject: function (subject) {
-      this.subjects.push(subject);
-    },
     grades: [],
   },
   {
@@ -34,9 +39,6 @@ export const students = [
     age: 33,
     gender: "N",
     subjects: [],
-    enlistToSubject: function (subject) {
-      this.subjects.push(subject);
-    },
     grades: [],
   },
   {
@@ -44,9 +46,6 @@ export const students = [
     age: 38,
     gender: "F",
     subjects: [],
-    enlistToSubject: function (subject) {
-      this.subjects.push(subject);
-    },
     grades: [],
   },
-];
+].map((studentDetails) => new Student(studentDetails));
