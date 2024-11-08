@@ -1,6 +1,6 @@
-import { teachers } from "./data/teachers.js";
+import { teachers, Teacher } from "./data/teachers.js";
 import { subjects } from "./data/subjects.js";
-import { students } from "./data/students.js";
+import { students, Student } from "./data/students.js";
 import { school } from "./data/school.js";
 
 const callDetails = () => {
@@ -18,8 +18,7 @@ const enrollStudentToSubject = (targetStudent, targetSubject) => {
   const subjectObject = subjects.find(
     (subject) => subject.name === targetSubject
   );
-
-  subjectObject.students.push(targetStudent);
+  subjectObject.enrollStudent(targetStudent);
 
   const studentObject = students.find(
     (student) => student.name === targetStudent
@@ -50,42 +49,36 @@ const asignToTeach = (targetTeacher, targetSubject) => {
   const subjectObject = subjects.find(
     (subject) => subject.name === targetSubject
   );
-  if (!subjectObject.teachers.includes(targetTeacher))
-    subjectObject.addTeacher(targetTeacher);
+  subjectObject.asignTeacher(targetTeacher);
 
   const teacherObject = teachers.find(
     (teacher) => teacher.name === targetTeacher
   );
-  if (!teacherObject.subjects.includes(targetSubject))
-    teacherObject.addSubject(targetSubject);
+  teacherObject.asignToTeach(targetSubject);
 };
 
 const removeStudentFromSubject = (targetStudent, targetSubject) => {
   const subjectObject = subjects.find(
     (subject) => subject.name === targetSubject
   );
-  const studentIndex = subjectObject.students.indexOf(targetStudent);
-  if (studentIndex > -1) subjectObject.students.splice(studentIndex, 1);
+  subjectObject.removeStudent(targetStudent);
 
   const studentObject = students.find(
     (student) => student.name === targetStudent
   );
-  const subjectIndex = studentObject.subjects.indexOf(targetSubject);
-  if (subjectIndex > -1) studentObject.subjects.splice(subjectIndex, 1);
+  studentObject.quitSubject(targetSubject);
 };
 
 const removeTeacherFromSubject = (targetTeacher, targetSubject) => {
   const subjectObject = subjects.find(
     (subject) => subject.name === targetSubject
   );
-  const teacherIndex = subjectObject.teachers.indexOf(targetTeacher);
-  if (teacherIndex > -1) subjectObject.teachers.splice(teacherIndex, 1);
+  subjectObject.removeTeacher(targetTeacher);
 
   const teacherObject = teachers.find(
     (teacher) => teacher.name === targetTeacher
   );
-  const subjectIndex = teacherObject.subjects.indexOf(targetSubject);
-  if (subjectIndex > -1) teacherObject.subjects.splice(subjectIndex, 1);
+  teacherObject.removeSubject(targetSubject);
 };
 
 const personQuit = (people, category) => (targetName) => {
@@ -97,14 +90,18 @@ const personQuit = (people, category) => (targetName) => {
 
   if (index > -1) people.splice(index, 1);
 
-  teknikhogskolan[category] = people;
+  school[category] = people;
 
   correspondingSubjects.forEach((targetSubject) => {
     const subjectObject = subjects.find(
       (subject) => subject.name === targetSubject
     );
-    const index = subjectObject[category].indexOf(targetName);
-    if (index > -1) subjectObject[category].splice(index, 1);
+    if (category === "students") {
+      subjectObject.removeStudent(targetName);
+    }
+    if (category === "teachers") {
+      subjectObject.removeTeacher(targetName);
+    }
   });
 };
 const studentQuit = personQuit(students, "students");
@@ -112,7 +109,7 @@ const teacherQuit = personQuit(teachers, "teachers");
 
 const displayEachCategory = (category) => {
   const display = [];
-  teknikhogskolan[category].forEach((person) => {
+  school[category].forEach((person) => {
     for (const key in person) {
       display.push(person[key]);
     }
@@ -138,49 +135,32 @@ const inputExamResults = (targetSubject, targetStudent, targetGrade) => {
   const studentObject = students.find(
     (student) => student.name === targetStudent
   );
-  const studentGradesObject = {};
-
-  studentGradesObject.subject = targetSubject;
-  studentGradesObject.grade = targetGrade;
-
-  studentObject.grades.push(studentGradesObject);
+  studentObject.inputGrade(targetSubject, targetGrade);
 
   const subjectObject = subjects.find(
     (subject) => subject.name === targetSubject
   );
-
-  const subjectGradesObject = {};
-
-  subjectGradesObject.student = targetStudent;
-  subjectGradesObject.grade = targetGrade;
-
-  subjectObject.grades.push(subjectGradesObject);
+  subjectObject.inputGrade(targetStudent, targetGrade);
 };
 
 const newStudent = (studentName, studentAge, studentGender) => {
-  const newStudentObject = {};
+  const newStudentDetails = {};
 
-  newStudentObject.name = studentName;
-  newStudentObject.age = studentAge;
-  newStudentObject.gender = studentGender;
-  newStudentObject.subjects = [];
-  newStudentObject.enlistToSubject = function (subject) {
-    this.subjects.push(subject);
-  };
-  newStudentObject.grades = [];
+  newStudentDetails.name = studentName;
+  newStudentDetails.age = studentAge;
+  newStudentDetails.gender = studentGender;
 
-  students.push(newStudentObject);
+  const newStudent = new Student(newStudentDetails);
+  students.push(newStudent);
 };
 
 const newTeacher = (teacherName) => {
-  const newTecherObject = {};
+  const newTecherDetails = {};
 
-  newTecherObject.name = teacherName;
-  newTecherObject.subjects = [];
-  newTecherObject.addSubject = function (subject) {
-    this.subjects.push(subject);
-  };
-  teachers.push(newTecherObject);
+  newTecherDetails.name = teacherName;
+
+  const newTeacher = new Teacher(newTecherDetails);
+  teachers.push(newTeacher);
 };
 
 //#region calling functions
@@ -219,17 +199,17 @@ const startingdetails = () => {
   registerAllStudentsToSchool();
   registerAllTeachersToSchool();
   enrollAllStudentsToSubject("mathematics");
-  // enrollStudentToSubject("student1", "chemistry");
-  // enrollStudentToSubject("student1", "chemistry");
-  // enrollStudentToSubject("student2", "chemistry");
-  // enrollStudentToSubject("student3", "chemistry");
-  // enrollStudentToSubject("student3", "biology");
-  // enrollStudentToSubject("student4", "biology");
-  // enrollStudentToSubject("student5", "biology");
-  // asignToTeach("teacher1", "mathematics");
-  // asignToTeach("teacher1", "chemistry");
-  // asignToTeach("teacher2", "biology");
-  // asignToTeach("teacher2", "chemistry");
+  enrollStudentToSubject("student1", "chemistry");
+  enrollStudentToSubject("student1", "chemistry");
+  enrollStudentToSubject("student2", "chemistry");
+  enrollStudentToSubject("student3", "chemistry");
+  enrollStudentToSubject("student3", "biology");
+  enrollStudentToSubject("student4", "biology");
+  enrollStudentToSubject("student5", "biology");
+  asignToTeach("teacher1", "mathematics");
+  asignToTeach("teacher1", "chemistry");
+  asignToTeach("teacher2", "biology");
+  asignToTeach("teacher2", "chemistry");
 };
 const changes1 = () => {
   removeStudentFromSubject("student1", "chemistry");
@@ -249,75 +229,23 @@ const changes3 = () => {
   inputExamResults("chemistry", "student2", "C");
   inputExamResults("chemistry", "student3", "A");
   inputExamResults("biology", "student4", "B");
-
   newStudent("student6", 17, "M");
   newStudent("student7", 23, "M");
-
   enrollStudentToSubject("student6", "mathematics");
   enrollStudentToSubject("student6", "biology");
   enrollStudentToSubject("student7", "mathematics");
   enrollStudentToSubject("student7", "biology");
   enrollStudentToSubject("student7", "chemistry");
-
   newTeacher("teacher3");
   asignToTeach("teacher3", "mathematics");
 };
 //#endregion
 
-startOfTermDetails();
+//startOfTermDetails();
 //firstWeekOfTermDetails();
 //duringTermTime();
 //afterMidTerm();
 
 //console.log(displayEachCategory("students"));
 //console.log(displayAllSubjectsOfStudent("student2"));
-
-/*export const addStudent = (_this, student) => {
-  _this.students.push(student);
-};
-
-const addSubjectToTeacher = (addSubject, targetTeacher) => {
-  let matchingSubject = "";
-  subjects.forEach((subject) => {
-    if (addSubject !== subject.name) return;
-    else if (addSubject === subject.name) matchingSubject = addSubject;
-  });
-
-  let matchingTeacher = "";
-  teachers.forEach((teacher) => {
-    if (targetTeacher !== teacher.name) return;
-    else if (targetTeacher === teacher.name) {
-      matchingTeacher = targetTeacher;
-    }
-
-    if (matchingSubject && matchingTeacher) {
-      teacher.subject = addSubject;
-    }
-  });
-  console.log(teachers);
-};
-
-addSubjectToTeacher("mathematics", "teacher2");
-
-const addStudentToSubjects = (addStudent, targetSubject) => {
-  let matchingStudent = "";
-  students.forEach((student) => {
-    if (addStudent !== student.name) return;
-    else if (addStudent === student.name) matchingStudent = addStudent;
-  });
-
-  let matchingSubject = "";
-  subjects.forEach((subject) => {
-    if (targetSubject !== subject.name) return;
-    else if (targetSubject === subject.name) {
-      matchingSubject = targetSubject;
-    }
-
-    if (matchingStudent && matchingSubject) {
-      subject.students = addStudent;
-    }
-  });
-  console.log(subjects);
-};
-
-addStudentToSubjects("student1", "mathematics");*/
+//console.log(displayAllStudentsOfSubject("mathematics"));

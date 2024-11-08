@@ -1,4 +1,4 @@
-class School {
+export class School {
   constructor({ name, address, postcode, city, students, teachers }) {
     this.name = name;
     this.address = address;

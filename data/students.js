@@ -1,4 +1,4 @@
-class Student {
+export class Student {
   name;
   age;
   gender;
@@ -16,6 +16,20 @@ class Student {
   enrollSubject(targetSubject) {
     if (!this.subjects.includes(targetSubject))
       this.subjects.push(targetSubject);
+  }
+
+  quitSubject(targetSubject) {
+    const subjectIndex = this.subjects.indexOf(targetSubject);
+    if (subjectIndex > -1) this.subjects.splice(subjectIndex, 1);
+  }
+
+  inputGrade(targetSubject, targetGrade) {
+    if (!this.subjects.includes(targetSubject)) return;
+    const studentGradesObject = {};
+    studentGradesObject.subject = targetSubject;
+    studentGradesObject.grade = targetGrade;
+
+    this.grades.push(studentGradesObject);
   }
 }
 

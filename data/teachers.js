@@ -1,4 +1,4 @@
-class Teacher {
+export class Teacher {
   name;
   subjects;
 
@@ -7,9 +7,14 @@ class Teacher {
     this.subjects = [];
   }
 
-  asignToTeach() {
+  asignToTeach(targetSubject) {
     if (!this.subjects.includes(targetSubject))
       this.subjects.push(targetSubject);
+  }
+
+  removeSubject(targetSubject) {
+    const subjectIndex = this.subjects.indexOf(targetSubject);
+    if (subjectIndex > -1) this.subjects.splice(subjectIndex, 1);
   }
 }
 
